@@ -1,7 +1,8 @@
 # MOVEO Yoga booking
 
 Simple booking for yoga classes at MOVEO Belair: clients book a **drop-in** or a **10-session card**,
-pay with **Apple Pay, Google Pay or card** (Stripe Checkout), and get an **Apple Wallet** ticket.
+pay with **Apple Pay, Google Pay or card** (Stripe Checkout), and get a ticket with a QR code.
+Apple Wallet passes are built in but switched off until an Apple Developer account is set up (planned for a later version).
 Instructors get a phone-friendly **check-in** view.
 
 - Client site: `/en`, `/fr`, `/de` (language picked from the browser)
@@ -64,7 +65,7 @@ DATABASE_URL=postgres://localhost/moveo_test npm test
    - Developers → Webhooks → add endpoint `https://book.moveo.lu/api/stripe/webhook` with events
      `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
      `checkout.session.async_payment_failed`, `checkout.session.expired`; set `STRIPE_WEBHOOK_SECRET`.
-4. **Apple Wallet** (needs the Apple Developer Program, 99 USD/year):
+4. **Apple Wallet** (later version; optional, needs the Apple Developer Program, 99 USD/year):
    - Certificates, IDs & Profiles → Identifiers → **Pass Type IDs** → register e.g. `pass.lu.moveo.yoga`.
    - Create a **Pass Type ID certificate** for it (upload a CSR from Keychain Access), download, export
      as `.p12`, then convert:
