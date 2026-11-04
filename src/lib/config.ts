@@ -18,8 +18,8 @@ export const config = {
   studioAddress: process.env.STUDIO_ADDRESS ?? "Belair, Luxembourg",
   timeZone: process.env.STUDIO_TIMEZONE ?? "Europe/Luxembourg",
   currency: (process.env.CURRENCY ?? "eur").toLowerCase(),
-  dropInCents: int("PRICE_DROPIN_CENTS", 3200),
-  cardCents: int("PRICE_CARD10_CENTS", 26000),
+  dropInCents: int("PRICE_DROPIN_CENTS", 3500),
+  cardCents: int("PRICE_CARD10_CENTS", 30000),
   cardCredits: int("CARD_CREDITS", 10),
   cardValidityDays: int("CARD_VALIDITY_DAYS", 90),
   /** Cancel at least this many hours before class to get the credit / money back. */
