@@ -24,6 +24,8 @@ export const config = {
   holdMinutes: int("HOLD_MINUTES", 30),
   /** Booking closes this many minutes after the class started (late arrivals). */
   bookingCutoffMinutes: int("BOOKING_CUTOFF_MINUTES", 10),
+  /** Free trial class for first-time clients. Set TRIAL_ENABLED=false to switch off. */
+  trialEnabled: process.env.TRIAL_ENABLED !== "false",
 };
 
 export const stripeEnabled = Boolean(process.env.STRIPE_SECRET_KEY);

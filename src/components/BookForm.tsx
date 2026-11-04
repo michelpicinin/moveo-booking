@@ -8,14 +8,15 @@ type Props = {
   locale: Locale;
   classId: string;
   prices: { dropIn: string; card: string; credits: number };
+  trialEnabled?: boolean;
 };
 
 const STORE = "moveo.booker";
 
-export function BookForm({ locale, classId, prices }: Props) {
+export function BookForm({ locale, classId, prices, trialEnabled }: Props) {
   const d = t(locale);
   const [state, action, pending] = useActionState<FormState, FormData>(bookClassAction, {});
-  const [method, setMethod] = useState<"dropin" | "newcard" | "mycard">("dropin");
+  const [method, setMethod] = useState<"dropin" | "newcard" | "mycard" | "trial">("dropin");
   const [saved, setSaved] = useState<{ name?: string; email?: string; cardCode?: string }>({});
 
   // Remember name, email and card code on this device to make the next booking one tap.
@@ -38,7 +39,7 @@ export function BookForm({ locale, classId, prices }: Props) {
 
   const fe = state.fieldErrors ?? {};
   const submitLabel =
-    method === "mycard" ? d.confirmWithCard : d.continuePay(method === "dropin" ? prices.dropIn : prices.card);
+    method === "mycard" ? d.confirmWithCard : method === "trial" ? d.confirmTrial : d.continuePay(method === "dropin" ? prices.dropIn : prices.card);
 
   return (
     <form action={action} onSubmit={remember} className="stack" noValidate>
@@ -68,6 +69,16 @@ export function BookForm({ locale, classId, prices }: Props) {
           </span>
           <span />
         </label>
+        {trialEnabled && !saved.cardCode && (
+          <label className="choice">
+            <input type="radio" name="method" value="trial" checked={method === "trial"} onChange={() => setMethod("trial")} />
+            <span className="name">
+              {d.payTrial}
+              <span className="sub">{d.payTrialHint}</span>
+            </span>
+            <span className="price-tag">0 €</span>
+          </label>
+        )}
       </fieldset>
 
       {method !== "mycard" && (
@@ -94,7 +105,7 @@ export function BookForm({ locale, classId, prices }: Props) {
       <button className="btn btn-primary btn-block" type="submit" disabled={pending}>
         {pending ? "…" : submitLabel}
       </button>
-      {method !== "mycard" && <p className="small muted center">{d.payMethods}</p>}
+      {(method === "dropin" || method === "newcard") && <p className="small muted center">{d.payMethods}</p>}
     </form>
   );
 }

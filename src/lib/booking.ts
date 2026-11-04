@@ -20,7 +20,9 @@ export class BookingError extends Error {
       | "card_expired"
       | "card_empty"
       | "booking_not_found"
-      | "already_cancelled",
+      | "already_cancelled"
+      | "trial_used"
+      | "trial_disabled",
   ) {
     super(code);
   }
@@ -134,6 +136,29 @@ export async function createPendingDropin(input: { classId: string; name: string
       values (${code}, ${input.classId}, ${customerId}, 'pending', 'dropin', ${config.dropInCents}, ${holdUntil()})
       returning id`;
     return { bookingId: b.id, bookingCode: code, supersededRefs };
+  });
+}
+
+/**
+ * Free trial class: no payment, confirmed straight away. Only for first-time clients:
+ * anyone who already has a booking (any kind, not cancelled) or a paid card isn't eligible.
+ */
+export async function bookTrial(input: { classId: string; name: string; email: string }) {
+  if (!config.trialEnabled) throw new BookingError("trial_disabled");
+  return sql.begin(async (tx) => {
+    const customerId = await upsertCustomer(tx, input.email, input.name);
+    // Serialize trial requests per client so two tabs can't both get a free class.
+    await tx`select id from customers where id = ${customerId} for update`;
+    const [{ used }] = await tx<{ used: boolean }[]>`
+      select exists (select 1 from bookings where customer_id = ${customerId} and status = 'confirmed')
+          or exists (select 1 from cards where customer_id = ${customerId} and status = 'active') as used`;
+    if (used) throw new BookingError("trial_used");
+    await lockClassForBooking(tx, input.classId, customerId);
+    const code = bookingCode();
+    await tx`
+      insert into bookings (code, class_id, customer_id, status, kind, amount_cents)
+      values (${code}, ${input.classId}, ${customerId}, 'confirmed', 'trial', 0)`;
+    return { bookingCode: code };
   });
 }
 
@@ -252,7 +277,7 @@ export type BookingView = {
   id: string;
   code: string;
   status: "pending" | "confirmed" | "cancelled" | "expired";
-  kind: "dropin" | "card" | "walkin";
+  kind: "dropin" | "card" | "walkin" | "trial";
   amountCents: number;
   paymentRef: string | null;
   checkoutRef: string | null;

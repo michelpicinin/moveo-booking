@@ -94,6 +94,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ local
               </div>
             </div>
           </div>
+          {config.trialEnabled && <div className="alert alert-ok mt">{d.trialBanner}</div>}
           <p className="small muted mt">{d.policy(config.cancelHours)}</p>
         </section>
       </main>

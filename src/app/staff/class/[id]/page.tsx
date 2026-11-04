@@ -11,7 +11,7 @@ import { staffCancelBookingAction, toggleCheckInAction } from "../../actions";
 
 export const dynamic = "force-dynamic";
 
-const KIND = { dropin: "Drop-in (paid online)", card: "10-card", walkin: "Walk-in (pay at desk)" } as const;
+const KIND = { dropin: "Drop-in (paid online)", card: "10-card", walkin: "Walk-in (pay at desk)", trial: "Free trial (new client)" } as const;
 
 export default async function StaffClass({
   params,

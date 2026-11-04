@@ -43,6 +43,7 @@ export default async function ClassPage({ params }: { params: Promise<{ locale: 
             <BookForm
               locale={locale}
               classId={cls.id}
+              trialEnabled={config.trialEnabled}
               prices={{ dropIn: money(config.dropInCents, locale), card: money(config.cardCents, locale), credits: config.cardCredits }}
             />
           )}

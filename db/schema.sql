@@ -45,7 +45,7 @@ create table if not exists bookings (
   class_id         uuid not null references classes(id),
   customer_id      uuid not null references customers(id),
   status           text not null check (status in ('pending','confirmed','cancelled','expired')),
-  kind             text not null check (kind in ('dropin','card','walkin')),
+  kind             text not null check (kind in ('dropin','card','walkin','trial')),
   card_id          uuid references cards(id),
   amount_cents     int not null default 0,
   checkout_ref     text,
@@ -61,6 +61,10 @@ create index if not exists bookings_checkout on bookings (checkout_ref);
 -- one live booking per person per class
 create unique index if not exists bookings_one_per_person
   on bookings (class_id, customer_id) where status in ('pending','confirmed');
+
+-- v0.2: free trial class (upgrade existing databases)
+alter table bookings drop constraint if exists bookings_kind_check;
+alter table bookings add constraint bookings_kind_check check (kind in ('dropin','card','walkin','trial'));
 
 create table if not exists processed_events (
   id         text primary key,

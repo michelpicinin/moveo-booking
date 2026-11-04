@@ -81,7 +81,7 @@ export default async function Scan({
                 {dayLong(b.startsAt, "en")}, {time(b.startsAt, "en")} · {b.instructor}
               </p>
               <p className="small muted">
-                {b.kind === "card" ? "Paid with 10-card" : b.kind === "dropin" ? "Drop-in, paid online" : "Walk-in"} · {b.code}
+                {b.kind === "card" ? "Paid with 10-card" : b.kind === "dropin" ? "Drop-in, paid online" : b.kind === "trial" ? "Free trial (new client)" : "Walk-in"} · {b.code}
               </p>
               {b.status !== "confirmed" && <div className="alert alert-error">This booking is {b.status}. Not valid.</div>}
               {b.status === "confirmed" && !isToday && <div className="alert alert-warn">Careful: this booking is not for today.</div>}

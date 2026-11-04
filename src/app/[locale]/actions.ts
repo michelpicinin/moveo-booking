@@ -5,6 +5,7 @@ import { z } from "zod";
 import {
   attachCheckoutRef,
   BookingError,
+  bookTrial,
   bookWithCard,
   cancelBooking,
   createPendingCard,
@@ -64,7 +65,12 @@ export async function bookClassAction(_prev: FormState, fd: FormData): Promise<F
     if (!cls) throw new BookingError("class_not_found");
     const when = `${dayLong(cls.startsAt, locale)}, ${time(cls.startsAt, locale)}`;
 
-    if (method === "mycard") {
+    if (method === "trial") {
+      const { bookingCode } = await bookTrial({ classId, name, email });
+      const b = await getBookingByCode(bookingCode);
+      if (b) await import("@/lib/email").then((m) => m.sendBookingConfirmation(b)).catch(console.error);
+      target = `/${locale}/b/${bookingCode}`;
+    } else if (method === "mycard") {
       const { bookingCode } = await bookWithCard({ classId, email, cardCode: cardCodeRaw });
       const b = await getBookingByCode(bookingCode);
       if (b) await import("@/lib/email").then((m) => m.sendBookingConfirmation(b)).catch(console.error);

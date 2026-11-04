@@ -15,6 +15,7 @@ Instructors get a phone-friendly **check-in** view.
 | Book a drop-in | Pick class → name + email → Stripe (Apple Pay / Google Pay / card) → ticket page with QR, Apple Wallet, calendar |
 | Buy a 10-card while booking | Same, choosing “Buy 10-session card”: the card is created and this class uses the first session |
 | Use their card | Email + card code (remembered on their phone after first use) → booked instantly, no payment |
+| Try a free class | New clients pick “Free trial class”: name + email, booked instantly, no payment. One per person (anyone with a past booking or a card isn't eligible); cancelling gives it back. Switch off with `TRIAL_ENABLED=false` |
 | Buy a card only / check balance | `/en/card` |
 | Cancel | Link in the confirmation email. ≥ 12 h before class: card session returned, or drop-in refunded via Stripe. Later: spot freed, no refund |
 

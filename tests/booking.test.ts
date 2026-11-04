@@ -129,6 +129,27 @@ d("booking flows", async () => {
     await expect(b.createPendingDropin({ classId, name: "X", email: "x@example.com" })).rejects.toMatchObject({ code: "class_cancelled" });
   });
 
+  it("free trial: once per new client, freed again if cancelled", async () => {
+    const c1 = await newClass({ capacity: 5 });
+    const c2 = await newClass({ capacity: 5 });
+    const { bookingCode } = await b.bookTrial({ classId: c1, name: "Ivy", email: "ivy@example.com" });
+    const view = await b.getBookingByCode(bookingCode);
+    expect(view).toMatchObject({ status: "confirmed", kind: "trial", amountCents: 0 });
+    await expect(b.bookTrial({ classId: c2, name: "Ivy", email: "IVY@example.com" })).rejects.toMatchObject({ code: "trial_used" });
+    // Cancelling gives the trial back
+    await b.cancelBooking(bookingCode, noRefund);
+    await expect(b.bookTrial({ classId: c2, name: "Ivy", email: "ivy@example.com" })).resolves.toBeTruthy();
+    // Existing clients (card holders, past drop-ins) are not eligible
+    await activeCard("jo@example.com");
+    await expect(b.bookTrial({ classId: c1, name: "Jo", email: "jo@example.com" })).rejects.toMatchObject({ code: "trial_used" });
+    // Two simultaneous trial requests: only one wins
+    const both = await Promise.allSettled([
+      b.bookTrial({ classId: c1, name: "Kim", email: "kim@example.com" }),
+      b.bookTrial({ classId: c2, name: "Kim", email: "kim@example.com" }),
+    ]);
+    expect(both.filter((r) => r.status === "fulfilled")).toHaveLength(1);
+  });
+
   it("never overbooks under concurrent requests", async () => {
     const classId = await newClass({ capacity: 3 });
     const results = await Promise.allSettled(

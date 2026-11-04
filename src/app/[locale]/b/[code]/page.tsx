@@ -35,7 +35,7 @@ export default async function BookingPage({
   const inTime = freeCancellation(b.startsAt, config.cancelHours);
   const upcoming = b.startsAt.getTime() > Date.now();
   const what = b.kind === "card" ? d.theSession : d.yourMoney;
-  const paidWith = b.kind === "card" ? `${d.card10(config.cardCredits)} (${b.cardCode})` : b.kind === "dropin" ? `${d.dropIn} · ${money(b.amountCents, locale)}` : d.dropIn;
+  const paidWith = b.kind === "card" ? `${d.card10(config.cardCredits)} (${b.cardCode})` : b.kind === "trial" ? d.payTrial : b.kind === "dropin" ? `${d.dropIn} · ${money(b.amountCents, locale)}` : d.dropIn;
 
   return (
     <>
