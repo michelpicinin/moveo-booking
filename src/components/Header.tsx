@@ -1,14 +1,14 @@
-import Link from "next/link";
 import type { Locale } from "@/lib/i18n";
 
 export function Header({ locale, path = "" }: { locale: Locale; path?: string }) {
   return (
     <header className="site-header">
       <div className="wrap">
-        <Link className="logo" href={`/${locale}`}>
+        {/* The logo leads back to the main MOVEO website, in the same language. */}
+        <a className="logo" href={`https://moveo.lu/${locale}/index.html`}>
           <span className="dot" />
           MOVEO <small>Yoga</small>
-        </Link>
+        </a>
         <nav className="lang" aria-label="Language">
           {(["de", "en", "fr"] as const).map((l) => (
             <a key={l} href={`/${l}${path}`} aria-current={l === locale ? "true" : undefined} hrefLang={l}>
