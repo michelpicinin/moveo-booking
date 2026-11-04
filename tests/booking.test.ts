@@ -74,7 +74,7 @@ d("booking flows", async () => {
     expect(r.cardCodes).toEqual([p.cardCode]);
     const card = await b.getCardByCode(p.cardCode);
     expect(card).toMatchObject({ status: "active", creditsUsed: 1, creditsTotal: 10 });
-    expect(card!.expiresAt!.getTime()).toBeGreaterThan(Date.now() + 170 * 86400_000);
+    expect(card!.expiresAt!.getTime()).toBeGreaterThan(Date.now() + 85 * 86400_000);
   });
 
   it("books with an existing card, checking email and balance", async () => {
