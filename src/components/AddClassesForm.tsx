@@ -12,7 +12,7 @@ export function AddClassesForm() {
         <div className="field"><label htmlFor="date">First date</label><input id="date" name="date" type="date" required /></div>
         <div className="field"><label htmlFor="time">Start time</label><input id="time" name="time" type="time" required /></div>
         <div className="field"><label htmlFor="duration">Duration (min)</label><input id="duration" name="duration" type="number" min={15} step={5} defaultValue={60} required /></div>
-        <div className="field"><label htmlFor="capacity">Spots</label><input id="capacity" name="capacity" type="number" min={1} defaultValue={12} required /></div>
+        <div className="field"><label htmlFor="capacity">Spots</label><input id="capacity" name="capacity" type="number" min={1} defaultValue={6} required /></div>
       </div>
       <div className="field">
         <label htmlFor="weeks">Repeat weekly for</label>
