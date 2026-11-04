@@ -68,3 +68,40 @@ export async function sendCardConfirmation(c: CardView) {
     ].join("\n"),
   );
 }
+
+/** Copy for the studio (STUDIO_NOTIFY_EMAIL, e.g. info@moveo.lu) on every booking and card sale. */
+const studioInbox = () => process.env.STUDIO_NOTIFY_EMAIL || null;
+
+const KIND_LABEL: Record<BookingView["kind"], string> = {
+  dropin: "Drop-in (paid online)",
+  card: "10-session card",
+  walkin: "Walk-in",
+  trial: "Free trial",
+};
+
+export async function notifyStudioBooking(b: BookingView) {
+  const when = `${dayLong(b.startsAt, "en")}, ${time(b.startsAt, "en")}`;
+  await send(
+    studioInbox(),
+    `New booking: ${b.customerName} – ${b.title}, ${when}`,
+    [
+      `${b.customerName} (${b.customerEmail ?? "no email"}) booked ${b.title} with ${b.instructor} on ${when}.`,
+      `Type: ${KIND_LABEL[b.kind]}${b.kind === "dropin" ? ` · ${money(b.amountCents, "en")}` : ""}`,
+      `Reference: ${b.code}`,
+      ``,
+      `Class list: ${config.appUrl}/staff/class/${b.classId}`,
+    ].join("\n"),
+  );
+}
+
+export async function notifyStudioCard(c: CardView) {
+  await send(
+    studioInbox(),
+    `New ${c.creditsTotal}-session card sold: ${c.customerName}`,
+    [
+      `${c.customerName} (${c.customerEmail ?? "no email"}) bought a ${c.creditsTotal}-session card for ${money(c.amountCents, "en")}.`,
+      `Card code: ${c.code}`,
+      c.expiresAt ? `Valid until: ${c.expiresAt.toISOString().slice(0, 10)}` : ``,
+    ].join("\n"),
+  );
+}

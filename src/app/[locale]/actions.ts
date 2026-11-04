@@ -68,12 +68,12 @@ export async function bookClassAction(_prev: FormState, fd: FormData): Promise<F
     if (method === "trial") {
       const { bookingCode } = await bookTrial({ classId, name, email });
       const b = await getBookingByCode(bookingCode);
-      if (b) await import("@/lib/email").then((m) => m.sendBookingConfirmation(b)).catch(console.error);
+      if (b) await import("@/lib/email").then((m) => Promise.all([m.sendBookingConfirmation(b), m.notifyStudioBooking(b)])).catch(console.error);
       target = `/${locale}/b/${bookingCode}`;
     } else if (method === "mycard") {
       const { bookingCode } = await bookWithCard({ classId, email, cardCode: cardCodeRaw });
       const b = await getBookingByCode(bookingCode);
-      if (b) await import("@/lib/email").then((m) => m.sendBookingConfirmation(b)).catch(console.error);
+      if (b) await import("@/lib/email").then((m) => Promise.all([m.sendBookingConfirmation(b), m.notifyStudioBooking(b)])).catch(console.error);
       target = `/${locale}/b/${bookingCode}`;
     } else if (method === "newcard") {
       const pending = await createPendingCard({ name, email, classId });

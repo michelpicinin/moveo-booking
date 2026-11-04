@@ -78,7 +78,7 @@ DATABASE_URL=postgres://localhost/moveo_test npm test
    - Set `PASS_TYPE_ID`, `APPLE_TEAM_ID`, `PASS_SIGNER_CERT`, `PASS_SIGNER_KEY`,
      `PASS_SIGNER_KEY_PASSPHRASE`, `PASS_WWDR_CERT` (PEM text or base64 of it).
    - Until these are set, the “Add to Apple Wallet” button is simply hidden.
-5. **Email**: create a [Resend](https://resend.com) account, verify `moveo.lu`, set `RESEND_API_KEY` and `EMAIL_FROM`.
+5. **Email**: create a [Resend](https://resend.com) account, verify `moveo.lu`, set `RESEND_API_KEY`, `EMAIL_FROM` and `STUDIO_NOTIFY_EMAIL` (the studio inbox that gets a copy of every booking and card sale).
 6. **Instructors**: set `STAFF_PASSWORD` and a long random `SESSION_SECRET`.
 7. Add a “Yoga” link on moveo.lu pointing to `https://book.moveo.lu`.
 
