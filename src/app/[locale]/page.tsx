@@ -28,7 +28,6 @@ export default async function SchedulePage({ params }: { params: Promise<{ local
     <>
       <Header locale={locale} />
       <main className="wrap">
-        <p className="eyebrow">{d.tagline}</p>
         <h1>{d.heroTitle}</h1>
         <p className="lead">{d.heroLead}</p>
 
