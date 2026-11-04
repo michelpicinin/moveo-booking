@@ -29,7 +29,6 @@ export default async function SchedulePage({ params }: { params: Promise<{ local
       <Header locale={locale} />
       <main className="wrap">
         <h1>{d.heroTitle}</h1>
-        <p className="lead">{d.heroLead}</p>
 
         <section aria-labelledby="schedule" className="mt">
           <h2 id="schedule" className="eyebrow" style={{ marginTop: 32 }}>{d.schedule}</h2>
