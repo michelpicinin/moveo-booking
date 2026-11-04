@@ -9,7 +9,11 @@ function int(name: string, fallback: number): number {
 }
 
 export const config = {
-  appUrl: (process.env.APP_URL ?? "http://localhost:3000").replace(/\/$/, ""),
+  // On Vercel, falls back to the project's production domain when APP_URL isn't set.
+  appUrl: (
+    process.env.APP_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000")
+  ).replace(/\/$/, ""),
   studioName: process.env.STUDIO_NAME ?? "MOVEO Belair",
   studioAddress: process.env.STUDIO_ADDRESS ?? "Belair, Luxembourg",
   timeZone: process.env.STUDIO_TIMEZONE ?? "Europe/Luxembourg",
