@@ -59,7 +59,7 @@ DATABASE_URL=postgres://localhost/moveo_test npm test
 1. **Database**: create a free Postgres at [neon.tech](https://neon.tech) and copy the connection string.
 2. **Hosting**: import the repo into [Vercel](https://vercel.com), set the env vars from `.env.example`,
    and point `book.moveo.lu` to it (CNAME). Run `npm run migrate` once against the production database
-   (or add it to the build command: `npm run migrate && next build`).
+   (`vercel.json` already runs the migration on every deploy).
 3. **Stripe**:
    - Settings → Payment methods: make sure **Apple Pay**, **Google Pay** and **Cards** are on.
    - Developers → API keys: set `STRIPE_SECRET_KEY`.
