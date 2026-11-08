@@ -2,7 +2,7 @@
 import { useActionState, useState } from "react";
 import { walkInAction, type StaffState } from "@/app/staff/actions";
 
-type Payment = "card" | "pass";
+type Payment = "card" | "pass" | "trial";
 
 export function WalkInForm({ classId, dropIn }: { classId: string; dropIn: string }) {
   const [state, action, pending] = useActionState<StaffState, FormData>(walkInAction, {});
@@ -10,6 +10,7 @@ export function WalkInForm({ classId, dropIn }: { classId: string; dropIn: strin
   const options: { value: Payment; label: string; sub: string }[] = [
     { value: "card", label: "Credit card on site", sub: `Drop-in ${dropIn}, paid on the card terminal` },
     { value: "pass", label: "10-session card", sub: "Uses one session from their card" },
+    { value: "trial", label: "Free trial", sub: "First class at MOVEO, no payment. Add their email so it's only used once" },
   ];
   return (
     <form action={action} className="stack" key={state.ok}>

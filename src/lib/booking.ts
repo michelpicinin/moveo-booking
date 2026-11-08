@@ -413,6 +413,8 @@ export async function addWalkIn(input: {
   cardCode?: string | null;
   /** For walk-ins without a 10-session card: paid by card terminal or cash at the studio. */
   onsitePayment?: "card" | "cash" | null;
+  /** Free trial class given at the door (no payment). With an email, the one-trial rule is checked. */
+  trial?: boolean;
 }) {
   return sql.begin(async (tx) => {
     let customerId: string;
@@ -425,13 +427,21 @@ export async function addWalkIn(input: {
     } else {
       customerId = await upsertCustomer(tx, input.email?.trim() || null, input.name);
     }
+    if (input.trial && !card) {
+      await tx`select id from customers where id = ${customerId} for update`;
+      const [{ used }] = await tx<{ used: boolean }[]>`
+        select exists (select 1 from bookings where customer_id = ${customerId} and status = 'confirmed')
+            or exists (select 1 from cards where customer_id = ${customerId} and status = 'active') as used`;
+      if (used) throw new BookingError("trial_used");
+    }
     const { startsAt } = await lockClassForBooking(tx, input.classId, customerId, { ignoreCapacity: true });
     if (card) assertCardUsable(card, startsAt);
+    const trial = Boolean(input.trial && !card);
     const code = bookingCode();
     await tx`
       insert into bookings (code, class_id, customer_id, status, kind, card_id, amount_cents, onsite_payment, checked_in_at)
-      values (${code}, ${input.classId}, ${customerId}, 'confirmed', ${card ? "card" : "walkin"}, ${cardId},
-              ${card ? 0 : config.dropInCents}, ${card ? null : (input.onsitePayment ?? null)}, now())`;
+      values (${code}, ${input.classId}, ${customerId}, 'confirmed', ${card ? "card" : trial ? "trial" : "walkin"}, ${cardId},
+              ${card || trial ? 0 : config.dropInCents}, ${card || trial ? null : (input.onsitePayment ?? null)}, now())`;
     if (cardId) await tx`update cards set credits_used = credits_used + 1 where id = ${cardId}`;
     return { bookingCode: code };
   });

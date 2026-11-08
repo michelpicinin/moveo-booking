@@ -48,6 +48,7 @@ function bookingErrorText(e: unknown) {
       card_empty: "This card has no sessions left.",
       already_booked: "This person is already on the list.",
       class_cancelled: "This class is cancelled.",
+      trial_used: "This person has already been to MOVEO (booking or card), so no free trial.",
     };
     return map[e.code] ?? e.code;
   }
@@ -65,7 +66,14 @@ export async function walkInAction(_prev: StaffState, fd: FormData): Promise<Sta
   if (payment !== "pass" && name.length < 2) return { error: "Enter the person's name." };
   const onsitePayment = payment === "card" ? "card" : null;
   try {
-    await addWalkIn({ classId, name, email: String(fd.get("email") ?? "") || null, cardCode: cardCode || null, onsitePayment });
+    await addWalkIn({
+      classId,
+      name,
+      email: String(fd.get("email") ?? "") || null,
+      cardCode: cardCode || null,
+      onsitePayment,
+      trial: payment === "trial",
+    });
   } catch (e) {
     return { error: bookingErrorText(e) };
   }
@@ -73,7 +81,9 @@ export async function walkInAction(_prev: StaffState, fd: FormData): Promise<Sta
   const ok =
     payment === "pass"
       ? "Checked in with 10-session card (1 session used)."
-      : `${name} added and checked in · paid by credit card on site.`;
+      : payment === "trial"
+        ? `${name} added and checked in · free trial class.`
+        : `${name} added and checked in · paid by credit card on site.`;
   return { ok };
 }
 

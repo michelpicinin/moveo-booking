@@ -143,6 +143,11 @@ d("booking flows", async () => {
     // Existing clients (card holders, past drop-ins) are not eligible
     await activeCard("jo@example.com");
     await expect(b.bookTrial({ classId: c1, name: "Jo", email: "jo@example.com" })).rejects.toMatchObject({ code: "trial_used" });
+    // Free trial given at the door: checked in, free, and counted against the one-trial rule
+    const door = await b.addWalkIn({ classId: c1, name: "Lou", email: "lou@example.com", trial: true });
+    expect(await b.getBookingByCode(door.bookingCode)).toMatchObject({ kind: "trial", amountCents: 0, onsitePayment: null });
+    await expect(b.bookTrial({ classId: c2, name: "Lou", email: "lou@example.com" })).rejects.toMatchObject({ code: "trial_used" });
+    await expect(b.addWalkIn({ classId: c2, name: "Jo", email: "jo@example.com", trial: true })).rejects.toMatchObject({ code: "trial_used" });
     // Two simultaneous trial requests: only one wins
     const both = await Promise.allSettled([
       b.bookTrial({ classId: c1, name: "Kim", email: "kim@example.com" }),
