@@ -12,6 +12,9 @@ import { staffCancelBookingAction, toggleCheckInAction } from "../../actions";
 export const dynamic = "force-dynamic";
 
 const KIND = { dropin: "Drop-in (paid online)", card: "10-card", walkin: "Walk-in (pay at desk)", trial: "Free trial (new client)" } as const;
+const ONSITE = { card: "Walk-in · credit card on site", cash: "Walk-in · cash" } as const;
+const label = (p: { kind: keyof typeof KIND; onsitePayment: "card" | "cash" | null }) =>
+  p.kind === "walkin" && p.onsitePayment ? ONSITE[p.onsitePayment] : KIND[p.kind];
 
 export default async function StaffClass({
   params,
@@ -56,7 +59,7 @@ export default async function StaffClass({
               <li key={p.id} data-name={p.customerName.toLowerCase()}>
                 <div className="who">
                   <strong>{p.customerName}</strong>
-                  <span>{KIND[p.kind]} · {p.code}</span>
+                  <span>{label(p)} · {p.code}</span>
                 </div>
                 <form action={toggleCheckInAction}>
                   <input type="hidden" name="bookingId" value={p.id} />
@@ -83,7 +86,7 @@ export default async function StaffClass({
               <tbody>
                 {people.map((p) => (
                   <tr key={p.id}>
-                    <td>{p.customerName}<br /><span className="small muted">{KIND[p.kind]}</span></td>
+                    <td>{p.customerName}<br /><span className="small muted">{label(p)}</span></td>
                     <td style={{ textAlign: "right" }}>
                       <form action={staffCancelBookingAction} className="row" style={{ justifyContent: "flex-end" }}>
                         <input type="hidden" name="code" value={p.code} />

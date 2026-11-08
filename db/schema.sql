@@ -66,6 +66,10 @@ create unique index if not exists bookings_one_per_person
 alter table bookings drop constraint if exists bookings_kind_check;
 alter table bookings add constraint bookings_kind_check check (kind in ('dropin','card','walkin','trial'));
 
+-- v0.3: how a walk-in paid at the studio (card terminal or cash)
+alter table bookings add column if not exists onsite_payment text
+  check (onsite_payment in ('card','cash'));
+
 create table if not exists processed_events (
   id         text primary key,
   created_at timestamptz not null default now()

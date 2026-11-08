@@ -25,7 +25,7 @@ describe("Apple Wallet passes", () => {
 
   const booking = {
     id: "x", code: "B23456789", status: "confirmed", kind: "dropin", amountCents: 2500, paymentRef: null, checkoutRef: null,
-    checkedInAt: null, refunded: false, customerName: "Ana Silva", customerEmail: "ana@example.com", cardCode: null,
+    checkedInAt: null, refunded: false, onsitePayment: null, customerName: "Ana Silva", customerEmail: "ana@example.com", cardCode: null,
     classId: "c", title: "Vinyasa Flow", instructor: "Anna", startsAt: new Date("2026-11-10T17:30:00Z"), durationMin: 60,
     location: "MOVEO Belair", classCancelled: false,
   } as const;

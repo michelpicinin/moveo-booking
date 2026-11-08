@@ -283,6 +283,8 @@ export type BookingView = {
   checkoutRef: string | null;
   checkedInAt: Date | null;
   refunded: boolean;
+  /** Walk-ins: how they paid at the studio. */
+  onsitePayment: "card" | "cash" | null;
   customerName: string;
   customerEmail: string | null;
   cardCode: string | null;
@@ -297,7 +299,7 @@ export type BookingView = {
 
 const BOOKING_VIEW = () => sql`
   select b.id, b.code, b.status, b.kind, b.amount_cents as "amountCents", b.payment_ref as "paymentRef",
-    b.checkout_ref as "checkoutRef", b.checked_in_at as "checkedInAt", b.refunded,
+    b.checkout_ref as "checkoutRef", b.checked_in_at as "checkedInAt", b.refunded, b.onsite_payment as "onsitePayment",
     cu.name as "customerName", cu.email as "customerEmail", k.code as "cardCode",
     c.id as "classId", c.title, c.instructor, c.starts_at as "startsAt", c.duration_min as "durationMin",
     c.location, c.cancelled as "classCancelled"
@@ -404,7 +406,14 @@ export async function setCheckIn(bookingId: string, present: boolean) {
 }
 
 /** Instructor adds someone at the door. With a card code, one credit is used. */
-export async function addWalkIn(input: { classId: string; name: string; email?: string | null; cardCode?: string | null }) {
+export async function addWalkIn(input: {
+  classId: string;
+  name: string;
+  email?: string | null;
+  cardCode?: string | null;
+  /** For walk-ins without a 10-session card: paid by card terminal or cash at the studio. */
+  onsitePayment?: "card" | "cash" | null;
+}) {
   return sql.begin(async (tx) => {
     let customerId: string;
     let cardId: string | null = null;
@@ -420,9 +429,9 @@ export async function addWalkIn(input: { classId: string; name: string; email?: 
     if (card) assertCardUsable(card, startsAt);
     const code = bookingCode();
     await tx`
-      insert into bookings (code, class_id, customer_id, status, kind, card_id, amount_cents, checked_in_at)
+      insert into bookings (code, class_id, customer_id, status, kind, card_id, amount_cents, onsite_payment, checked_in_at)
       values (${code}, ${input.classId}, ${customerId}, 'confirmed', ${card ? "card" : "walkin"}, ${cardId},
-              ${card ? 0 : config.dropInCents}, now())`;
+              ${card ? 0 : config.dropInCents}, ${card ? null : (input.onsitePayment ?? null)}, now())`;
     if (cardId) await tx`update cards set credits_used = credits_used + 1 where id = ${cardId}`;
     return { bookingCode: code };
   });

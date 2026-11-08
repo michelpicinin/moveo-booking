@@ -59,15 +59,22 @@ export async function walkInAction(_prev: StaffState, fd: FormData): Promise<Sta
   await requireStaff();
   const classId = String(fd.get("classId"));
   const name = String(fd.get("name") ?? "").trim();
-  const cardCode = String(fd.get("cardCode") ?? "").trim();
-  if (!cardCode && name.length < 2) return { error: "Enter a name (or a card code)." };
+  const payment = String(fd.get("payment") ?? "card");
+  const cardCode = payment === "pass" ? String(fd.get("cardCode") ?? "").trim() : "";
+  if (payment === "pass" && !cardCode) return { error: "Enter the 10-session card code." };
+  if (payment !== "pass" && name.length < 2) return { error: "Enter the person's name." };
+  const onsitePayment = payment === "cash" ? "cash" : payment === "card" ? "card" : null;
   try {
-    await addWalkIn({ classId, name, email: String(fd.get("email") ?? "") || null, cardCode: cardCode || null });
+    await addWalkIn({ classId, name, email: String(fd.get("email") ?? "") || null, cardCode: cardCode || null, onsitePayment });
   } catch (e) {
     return { error: bookingErrorText(e) };
   }
   revalidatePath(`/staff/class/${classId}`);
-  return { ok: cardCode ? "Checked in with card (1 session used)." : `${name} added and checked in. Collect the drop-in fee.` };
+  const ok =
+    payment === "pass"
+      ? "Checked in with 10-session card (1 session used)."
+      : `${name} added and checked in · paid ${payment === "cash" ? "in cash" : "by credit card on site"}.`;
+  return { ok };
 }
 
 export async function cardCheckInAction(fd: FormData) {

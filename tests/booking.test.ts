@@ -112,11 +112,12 @@ d("booking flows", async () => {
     const classId = await newClass({ capacity: 1 });
     const code = await activeCard("gil@example.com");
     const { bookingCode } = await b.bookWithCard({ classId, email: "gil@example.com", cardCode: code });
-    // Walk-ins may exceed capacity (instructor's call)
-    await b.addWalkIn({ classId, name: "Hal" });
+    // Walk-ins may exceed capacity (instructor's call); payment taken on site is recorded
+    await b.addWalkIn({ classId, name: "Hal", onsitePayment: "card" });
     const list = await b.roster(classId);
     expect(list.map((x) => x.customerName).sort()).toEqual(["Card Holder", "Hal"]);
     expect(list.find((x) => x.customerName === "Hal")?.checkedInAt).toBeTruthy();
+    expect(list.find((x) => x.customerName === "Hal")).toMatchObject({ kind: "walkin", onsitePayment: "card", amountCents: 3200 });
     const gil = list.find((x) => x.code === bookingCode)!;
     await b.setCheckIn(gil.id, true);
     expect((await b.getBookingByCode(bookingCode))?.checkedInAt).toBeTruthy();
