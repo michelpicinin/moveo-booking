@@ -2,14 +2,13 @@
 import { useActionState, useState } from "react";
 import { walkInAction, type StaffState } from "@/app/staff/actions";
 
-type Payment = "card" | "cash" | "pass";
+type Payment = "card" | "pass";
 
 export function WalkInForm({ classId, dropIn }: { classId: string; dropIn: string }) {
   const [state, action, pending] = useActionState<StaffState, FormData>(walkInAction, {});
   const [payment, setPayment] = useState<Payment>("card");
   const options: { value: Payment; label: string; sub: string }[] = [
     { value: "card", label: "Credit card on site", sub: `Drop-in ${dropIn}, paid on the card terminal` },
-    { value: "cash", label: "Cash", sub: `Drop-in ${dropIn}, paid in cash` },
     { value: "pass", label: "10-session card", sub: "Uses one session from their card" },
   ];
   return (

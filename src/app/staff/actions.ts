@@ -63,7 +63,7 @@ export async function walkInAction(_prev: StaffState, fd: FormData): Promise<Sta
   const cardCode = payment === "pass" ? String(fd.get("cardCode") ?? "").trim() : "";
   if (payment === "pass" && !cardCode) return { error: "Enter the 10-session card code." };
   if (payment !== "pass" && name.length < 2) return { error: "Enter the person's name." };
-  const onsitePayment = payment === "cash" ? "cash" : payment === "card" ? "card" : null;
+  const onsitePayment = payment === "card" ? "card" : null;
   try {
     await addWalkIn({ classId, name, email: String(fd.get("email") ?? "") || null, cardCode: cardCode || null, onsitePayment });
   } catch (e) {
@@ -73,7 +73,7 @@ export async function walkInAction(_prev: StaffState, fd: FormData): Promise<Sta
   const ok =
     payment === "pass"
       ? "Checked in with 10-session card (1 session used)."
-      : `${name} added and checked in · paid ${payment === "cash" ? "in cash" : "by credit card on site"}.`;
+      : `${name} added and checked in · paid by credit card on site.`;
   return { ok };
 }
 
