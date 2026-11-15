@@ -62,7 +62,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ local
                         <span className="badge badge-off">{d.full}</span>
                       ) : (
                         <>
-                          <span className={`badge${left <= 3 ? " badge-warn" : ""}`}>{d.spotsLeft(left)}</span>
+                          <span className={`badge${left === 1 ? " badge-warn" : ""}`}>{d.spotsLeft(left)}</span>
                           <span className="btn btn-primary btn-sm">{d.book}</span>
                         </>
                       )}
