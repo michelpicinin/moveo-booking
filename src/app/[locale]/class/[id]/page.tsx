@@ -30,7 +30,7 @@ export default async function ClassPage({ params }: { params: Promise<{ locale: 
           <p className="muted">
             {d.with} {cls.instructor} · {d.minutes(cls.durationMin)} · {cls.location}
           </p>
-          {!blocked && <span className={`badge${left <= 3 ? " badge-warn" : ""}`}>{d.spotsLeft(left)}</span>}
+          {!blocked && <span className={`badge${left === 1 ? " badge-warn" : ""}`}>{d.spotsLeft(left)}</span>}
         </div>
 
         <div className="panel">
