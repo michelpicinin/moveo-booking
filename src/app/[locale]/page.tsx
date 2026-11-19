@@ -28,10 +28,15 @@ export default async function SchedulePage({ params }: { params: Promise<{ local
     <>
       <Header locale={locale} />
       {/* Kopfbereich wie auf moveo.lu: Foto rechts (Foto 017, Pflug-Haltung), läuft nach links ins Papierweiß aus */}
-      <section className="hero-band" role="img" aria-label={d.heroImageAlt}>
+      <section className="hero-band">
         <div className="wrap">
+          <span className="sr-only">{d.heroImageAlt}</span>
           <h1 className="page-title">{d.heroTitle}</h1>
           <p className="lead">{d.heroLead}</p>
+          {/* Eindeutiger Weg zur Kurse-Seite auf moveo.lu, in derselben Sprache */}
+          <a className="classes-link" href={d.classesInfoUrl}>
+            {d.classesInfo} <span aria-hidden="true">&rarr;</span>
+          </a>
         </div>
       </section>
       <main className="wrap">
