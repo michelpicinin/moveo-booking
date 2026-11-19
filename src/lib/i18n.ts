@@ -6,6 +6,7 @@ export const isLocale = (s: string): s is Locale => (locales as readonly string[
 const en = {
   tagline: "Yoga at MOVEO",
   heroTitle: "Book your yoga class",
+  heroImageAlt: "Yoga class at MOVEO in Belair: plough pose on the mat in the bright studio",
   heroLead: "Pick a class, pay with Apple Pay, Google Pay or card, and get your ticket right on your phone.",
   schedule: "Class schedule",
   noClasses: "No classes scheduled yet. Please check back soon.",
@@ -109,6 +110,7 @@ export type Dict = typeof en;
 const fr: Dict = {
   tagline: "Yoga chez MOVEO",
   heroTitle: "Réservez votre cours de yoga",
+  heroImageAlt: "Cours de yoga chez MOVEO à Belair : posture de la charrue sur le tapis, dans la salle lumineuse",
   heroLead: "Choisissez un cours, payez avec Apple Pay, Google Pay ou carte, et recevez votre billet directement sur votre téléphone.",
   schedule: "Planning des cours",
   noClasses: "Aucun cours programmé pour le moment. Revenez bientôt.",
@@ -205,6 +207,7 @@ const fr: Dict = {
 const de: Dict = {
   tagline: "Yoga bei MOVEO",
   heroTitle: "Buche deine Yogastunde",
+  heroImageAlt: "Yogastunde bei MOVEO in Belair: Pflug-Haltung auf der Matte im hellen Kursraum",
   heroLead: "Wähle eine Stunde, bezahle mit Apple Pay, Google Pay oder Karte und erhalte dein Ticket direkt auf dein Handy.",
   schedule: "Stundenplan",
   noClasses: "Noch keine Stunden geplant. Schau bald wieder vorbei.",

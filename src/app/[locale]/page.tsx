@@ -27,8 +27,14 @@ export default async function SchedulePage({ params }: { params: Promise<{ local
   return (
     <>
       <Header locale={locale} />
+      {/* Kopfbereich wie auf moveo.lu: Foto rechts (Foto 017, Pflug-Haltung), läuft nach links ins Papierweiß aus */}
+      <section className="hero-band" role="img" aria-label={d.heroImageAlt}>
+        <div className="wrap">
+          <h1 className="page-title">{d.heroTitle}</h1>
+          <p className="lead">{d.heroLead}</p>
+        </div>
+      </section>
       <main className="wrap">
-        <h1 className="page-title">{d.heroTitle}</h1>
 
         <section aria-labelledby="schedule" className="mt">
           <h2 id="schedule" className="eyebrow" style={{ marginTop: 32 }}>{d.schedule}</h2>
