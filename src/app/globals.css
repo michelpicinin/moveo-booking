@@ -215,8 +215,8 @@ table.list th { font-weight: 500; color: var(--muted); font-size: 12px; text-tra
   position: absolute;
   inset: 0 0 0 auto;
   width: 64%;
-  /* rechts mehr abgeschnitten: Person rückt nach rechts, Beine nicht unter dem Text */
-  background: url(/yoga-hero.jpg) 0% 62% / 135% auto no-repeat;
+  /* Foto 012: Seitstütz im Kursraum, Person rechts vom Text */
+  background: url(/yoga-hero.jpg) center 60% / cover no-repeat;
   opacity: 0.92;
   -webkit-mask-image: linear-gradient(to left, #000 0, #000 45%, rgba(0,0,0,.35) 72%, transparent 92%);
   mask-image: linear-gradient(to left, #000 0, #000 45%, rgba(0,0,0,.35) 72%, transparent 92%);
@@ -239,7 +239,7 @@ table.list th { font-weight: 500; color: var(--muted); font-size: 12px; text-tra
 @media (max-width: 720px) {
   .hero-band { padding-top: 250px; padding-bottom: 28px; }
   .hero-band::before {
-    width: 100%; height: 280px; bottom: auto; background-size: cover; background-position: 18% 60%;
+    width: 100%; height: 280px; bottom: auto; background-size: cover; background-position: 70% 60%;
     -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 60%, transparent 100%);
     mask-image: linear-gradient(to bottom, #000 0, #000 60%, transparent 100%);
   }
